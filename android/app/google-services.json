@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "322469144910",
+    "project_id": "nnrg-20183",
+    "storage_bucket": "nnrg-20183.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322469144910:android:fb703c6a57a0c53e67161f",
+        "android_client_info": {
+          "package_name": "com.college.nnrg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322469144910-3m4bh61hok4uok6s7gj62drffdhg8b7s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAElBjroYnVG0lNptGNSImXQOe3wl5QkxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322469144910-3m4bh61hok4uok6s7gj62drffdhg8b7s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
