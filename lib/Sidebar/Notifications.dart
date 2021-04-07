@@ -23,7 +23,6 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-
   CrudMethods crudMethods = new CrudMethods();
   QuerySnapshot blogSnapshot;
 
@@ -33,8 +32,6 @@ class _NotificationsState extends State<Notifications> {
   //     {
   //       @required this.imgUrl,
   //     });
-
-
 
   bool isConnected = true;
 
@@ -46,11 +43,7 @@ class _NotificationsState extends State<Notifications> {
       adUnitID: NativeAd.testAdUnitId,
       controller: _controller,
     );
-    return Container(
-        width: double.infinity,
-        height: 100,
-        child: nativeAdModAd
-    );
+    return Container(width: double.infinity, height: 100, child: nativeAdModAd);
   }
 
   Future checkConnectivity() async {
@@ -67,13 +60,13 @@ class _NotificationsState extends State<Notifications> {
     }
   }
 
-  String useruid="";
+  String useruid = "";
 
   Future<void> getpresentuseruid() async {
     // ignore: await_only_futures
-    var tempid= await FirebaseAuth.instance.currentUser.uid;
+    var tempid = await FirebaseAuth.instance.currentUser.uid;
     setState(() {
-      useruid= tempid;
+      useruid = tempid;
     });
   }
 
@@ -88,6 +81,7 @@ class _NotificationsState extends State<Notifications> {
       ..status = data['status'];
     return item;
   }
+
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   Widget _buildDialog(BuildContext context, Item item) {
     return AlertDialog(
@@ -119,6 +113,7 @@ class _NotificationsState extends State<Notifications> {
       }
     });
   }
+
   void _navigateToItemDetail(Map<String, dynamic> message) {
     final Item item = _itemForMessage(message);
     // Clear away dialogs
@@ -127,7 +122,8 @@ class _NotificationsState extends State<Notifications> {
       Navigator.push(context, item.route);
     }
   }
-  initializeFCM(){
+
+  initializeFCM() {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
@@ -144,8 +140,7 @@ class _NotificationsState extends State<Notifications> {
     );
     _firebaseMessaging.requestNotificationPermissions(
         const IosNotificationSettings(
-            sound: true, badge: true, alert: true, provisional: true)
-    );
+            sound: true, badge: true, alert: true, provisional: true));
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
       setState(() {
@@ -159,164 +154,242 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   Widget build(BuildContext context) {
-    return  isConnected ? Scaffold(
-        backgroundColor: Colors.black87,
-        appBar: AppBar(
-          brightness: Brightness.light,
-          centerTitle: true,
-          title: Shimmer.fromColors(
-            baseColor:Colors.white,
-            highlightColor:Colors.black,
-            child: Text("Notifications", style: TextStyle(
-                fontFamily: 'Handlee',fontSize: 33),
+    return isConnected
+        ? Scaffold(
+            backgroundColor: Colors.black87,
+            appBar: AppBar(
+              brightness: Brightness.light,
+              centerTitle: true,
+              title: Shimmer.fromColors(
+                baseColor: Colors.white,
+                highlightColor: Colors.black,
+                child: Text(
+                  "Notifications",
+                  style: TextStyle(fontFamily: 'Handlee', fontSize: 33),
+                ),
+              ),
+              flexibleSpace: Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[
+                    Color(0xFF52779F),
+                    Color(0xFF52779F),
+                  ],
+                )),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.add),
+                  color: Colors.transparent,
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddPost()));
+                  },
+                ),
+              ],
             ),
-          ),
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: <Color>[
-                      Color(0xFF52779F),
-                      Color(0xFF52779F),
-                    ])
-            ),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon( Icons.add ),
-              color: Colors.transparent,
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddPost()));
-              },
-            ),
-          ],
-        ),
-        body:  StreamBuilder(
-          stream : FirebaseFirestore.instance.collection('posts').orderBy("date",descending: true).snapshots(),
-          builder: (BuildContext context,AsyncSnapshot <QuerySnapshot> snapshot) {
-            if(snapshot.hasData){
-              return ListView.builder(
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (context,index){
-                    var cards= Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        child: ListTile(
-                          title: ListTile(
-                            onTap: () { },
-                            title: Text(
-                              snapshot.data.docs[index].data()["title"],
-                              style: TextStyle(
-                                  fontSize: 22.0,
-                                  letterSpacing: 1,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Text(
-                              timeago.format(
-                                  DateTime.fromMillisecondsSinceEpoch(snapshot.data.docs[index].data()["date"])),
-                              style: TextStyle(fontSize: 14.0, color: Colors.grey),
-                            ),
-                          ),
-                          isThreeLine: true,
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(bottom: 14.0),
-                            child: Column(
-                              children: [
-
-                                // Linkify(
-                                //   onOpen: (link) async{
-                                //     if (await canLaunch(link.url)) {
-                                //       await launch(link.url);
-                                //     } else {
-                                //       Fluttertoast.showToast(
-                                //         toastLength: Toast.LENGTH_LONG,
-                                //         msg: "Could not launch $link",
-                                //         backgroundColor: Colors.white,
-                                //         textColor: Colors.black54,
-                                //         gravity: ToastGravity.CENTER,
-                                //       );
-                                //     }
-                                //   },
-                                //   text: (snapshot.data.docs[index].data()["body"] ),
-                                //   style: TextStyle(fontSize: 18.0),
-                                // ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            body: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('posts')
+                  .orderBy("date", descending: true)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        print(
+                            "IMAGE URL: ${snapshot.data.docs[index].data()["imageUrl"]}");
+                        var cards = Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            child: ListTile(
+                              title: ListTile(
+                                onTap: () {},
+                                title: Text(
+                                  snapshot.data.docs[index].data()["title"],
+                                  style: TextStyle(
+                                      fontSize: 22.0,
+                                      letterSpacing: 1,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                trailing: Text(
+                                  timeago.format(
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                          snapshot.data.docs[index]
+                                              .data()["date"])),
+                                  style: TextStyle(
+                                      fontSize: 14.0, color: Colors.grey),
+                                ),
+                              ),
+                              isThreeLine: true,
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(bottom: 14.0),
+                                child: Column(
                                   children: [
-                                    IconButton(
-                                      onPressed: ()  {
-                                        HapticFeedback.heavyImpact();
-                                        if(snapshot.data.docs[index].data()[useruid]!=null){
-                                          if(snapshot.data.docs[index].data()[useruid]){
-                                            // ignore: deprecated_member_use
-                                            FirebaseFirestore.instance.collection('posts').doc(snapshot.data.docs[index].documentID.toString()).update({
-                                              "likes":(snapshot.data.docs[index].data()["likes"])-1,
-                                              useruid:false,
-                                            });
-                                          }
-                                          else{
-                                            // ignore: deprecated_member_use
-                                            FirebaseFirestore.instance.collection('posts').doc(snapshot.data.docs[index].documentID.toString()).update({
-                                              "likes":(snapshot.data.docs[index].data()["likes"])+1,
-                                              useruid:true,
-                                            });
-                                          }
-                                        }
-                                        else{
-                                          // ignore: deprecated_member_use
-                                          FirebaseFirestore.instance.collection('posts').doc(snapshot.data.docs[index].documentID.toString()).update({
-                                            "likes":(snapshot.data.docs[index].data()["likes"])+1,
-                                            useruid:true,
-                                          });
-                                        }
-                                      },
-                                      icon: Icon(snapshot.data.docs[index].data()[useruid]==true
-                                          ?Icons.favorite:Icons.favorite_border,color: snapshot.data.docs[index].data()[useruid]==true
-                                          ?Colors.red:Colors.black,size: 16,),),
-                                    Text(snapshot.data.docs[index].data()["likes"].toString(),style:TextStyle(color: CupertinoColors.systemRed),),
-                                    IconButton(
-                                      icon: Icon(Icons.chat_bubble_outline,color: Colors.grey),
-                                      iconSize: 18,
-                                      onPressed: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => CommentScreen()));
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.share,color: Colors.blueAccent),
-                                      iconSize: 18,
-                                      onPressed: (){
-                                        Share.share("Please Download 'NNRG Student Portal' App From\n"
-                                            "https://play.google.com/store/apps/details?id=com.clg.nnrg&hl=en_US&gl=US\n"
-                                            " To View This Post.. ",subject: "Download 'NNRG Student Portal' App");
-                                      },
+                                    // Linkify(
+                                    //   onOpen: (link) async{
+                                    //     if (await canLaunch(link.url)) {
+                                    //       await launch(link.url);
+                                    //     } else {
+                                    //       Fluttertoast.showToast(
+                                    //         toastLength: Toast.LENGTH_LONG,
+                                    //         msg: "Could not launch $link",
+                                    //         backgroundColor: Colors.white,
+                                    //         textColor: Colors.black54,
+                                    //         gravity: ToastGravity.CENTER,
+                                    //       );
+                                    //     }
+                                    //   },
+                                    //   text: (snapshot.data.docs[index].data()["body"] ),
+                                    //   style: TextStyle(fontSize: 18.0),
+                                    // ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            HapticFeedback.heavyImpact();
+                                            if (snapshot.data.docs[index]
+                                                    .data()[useruid] !=
+                                                null) {
+                                              if (snapshot.data.docs[index]
+                                                  .data()[useruid]) {
+                                                // ignore: deprecated_member_use
+                                                FirebaseFirestore.instance
+                                                    .collection('posts')
+                                                    .doc(snapshot.data
+                                                        .docs[index].documentID
+                                                        .toString())
+                                                    .update({
+                                                  "likes": (snapshot
+                                                          .data.docs[index]
+                                                          .data()["likes"]) -
+                                                      1,
+                                                  useruid: false,
+                                                });
+                                              } else {
+                                                // ignore: deprecated_member_use
+                                                FirebaseFirestore.instance
+                                                    .collection('posts')
+                                                    .doc(snapshot.data
+                                                        .docs[index].documentID
+                                                        .toString())
+                                                    .update({
+                                                  "likes": (snapshot
+                                                          .data.docs[index]
+                                                          .data()["likes"]) +
+                                                      1,
+                                                  useruid: true,
+                                                });
+                                              }
+                                            } else {
+                                              // ignore: deprecated_member_use
+                                              FirebaseFirestore.instance
+                                                  .collection('posts')
+                                                  .doc(snapshot.data.docs[index]
+                                                      .documentID
+                                                      .toString())
+                                                  .update({
+                                                "likes": (snapshot
+                                                        .data.docs[index]
+                                                        .data()["likes"]) +
+                                                    1,
+                                                useruid: true,
+                                              });
+                                            }
+                                          },
+                                          icon: Icon(
+                                            snapshot.data.docs[index]
+                                                        .data()[useruid] ==
+                                                    true
+                                                ? Icons.favorite
+                                                : Icons.favorite_border,
+                                            color: snapshot.data.docs[index]
+                                                        .data()[useruid] ==
+                                                    true
+                                                ? Colors.red
+                                                : Colors.black,
+                                            size: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          snapshot.data.docs[index]
+                                              .data()["likes"]
+                                              .toString(),
+                                          style: TextStyle(
+                                              color: CupertinoColors.systemRed),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.chat_bubble_outline,
+                                              color: Colors.grey),
+                                          iconSize: 18,
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CommentScreen()));
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.share,
+                                              color: Colors.blueAccent),
+                                          iconSize: 18,
+                                          onPressed: () {
+                                            Share.share(
+                                                "Please Download 'NNRG Student Portal' App From\n"
+                                                "https://play.google.com/store/apps/details?id=com.clg.nnrg&hl=en_US&gl=US\n"
+                                                " To View This Post.. ",
+                                                subject:
+                                                    "Download 'NNRG Student Portal' App");
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                    return Column(
-                      children: [
-                        cards,
-                        index % 2 == 0 ? createNativeAd() : Container()
-                      ],
-                    );
-                  }
-              );
-
-            } else {
-              return Container(
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(),);
-            }
-          },
-        )
-    )
-        :   NoConnectionScreen(context);
+                        );
+                        return Column(
+                          children: [
+                            Container(
+                              height: 200.0,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    snapshot.data.docs[index]
+                                                .data()["imageUrl"] ==
+                                            null
+                                        ? "https://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_28dp.png"
+                                        : snapshot.data.docs[index]
+                                            .data()["imageUrl"],
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            cards,
+                            index % 2 == 0 ? createNativeAd() : Container()
+                          ],
+                        );
+                      });
+                } else {
+                  return Container(
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ))
+        : NoConnectionScreen(context);
   }
 
   @override

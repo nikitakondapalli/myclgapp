@@ -6,13 +6,14 @@ import 'Sidebar/Home.dart';
 import 'VIews/Register.dart';
 import 'VIews/Verifi.dart';
 
+/// * DO NULL CHECK WHEREVER POSSIBLE
+///
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await Firebase.initializeApp();
   runApp(MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -42,19 +43,21 @@ class _SplashScreenState extends State<SplashScreen> {
             fit: BoxFit.fill,
           ),
           Positioned(
-               bottom: 120,
+              bottom: 120,
               // right: 150,
-               left: 150,
+              left: 150,
               child: Row(
                 children: <Widget>[
-                  SizedBox(width: 30.0, height: 30.0,
-                    child: CircularProgressIndicator(strokeWidth: 2.0,
+                  SizedBox(
+                    width: 30.0,
+                    height: 30.0,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.0,
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
                 ],
-              )
-          )
+              ))
         ],
       ),
     );
@@ -68,7 +71,8 @@ class _SplashScreenState extends State<SplashScreen> {
       if (user.emailVerified) {
         Future.delayed(Duration(seconds: 2), () {
           var newRoute = MaterialPageRoute(builder: (context) => Home());
-          Navigator.pushAndRemoveUntil(context, newRoute, (Route<dynamic> route) => false);
+          Navigator.pushAndRemoveUntil(
+              context, newRoute, (Route<dynamic> route) => false);
         });
       } else {
         Future.delayed(Duration(seconds: 2), () {
@@ -80,7 +84,8 @@ class _SplashScreenState extends State<SplashScreen> {
       print("no user found");
       Future.delayed(Duration(seconds: 2), () {
         var newRoute = MaterialPageRoute(builder: (context) => Register());
-        Navigator.pushAndRemoveUntil(context, newRoute, (Route<dynamic> route) => false);
+        Navigator.pushAndRemoveUntil(
+            context, newRoute, (Route<dynamic> route) => false);
       });
     }
   }

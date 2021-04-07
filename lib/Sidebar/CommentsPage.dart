@@ -35,19 +35,20 @@ class _CommentScreenState extends State<CommentScreen> {
       appBar: AppBar(
         brightness: Brightness.light,
         centerTitle: true,
-        title: Text("Comments",
-          style: TextStyle(fontFamily: 'Handlee',fontSize: 29),
+        title: Text(
+          "Comments",
+          style: TextStyle(fontFamily: 'Handlee', fontSize: 29),
         ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[
-                    Color(0xFF52779F),
-                    Color(0xFF52779F),
-                  ])
-          ),
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: <Color>[
+              Color(0xFF52779F),
+              Color(0xFF52779F),
+            ],
+          )),
         ),
       ),
       body: buildPage(),
@@ -68,19 +69,27 @@ class _CommentScreenState extends State<CommentScreen> {
             decoration: InputDecoration(labelText: 'Write a comment...'),
             onFieldSubmitted: addComment,
           ),
-          trailing: OutlineButton(onPressed: (){addComment(_commentController.text);},
-            borderSide: BorderSide.none, child: Text("Post", style: TextStyle(
-              fontFamily: "OpenSansPro",
-              color: Colors.blueAccent,
-              fontSize: 18,),),),
+          trailing: OutlineButton(
+            onPressed: () {
+              addComment(_commentController.text);
+            },
+            borderSide: BorderSide.none,
+            child: Text(
+              "Post",
+              style: TextStyle(
+                fontFamily: "OpenSansPro",
+                color: Colors.blueAccent,
+                fontSize: 18,
+              ),
+            ),
+          ),
         ),
       ],
     );
   }
 
-
   Widget buildComments() {
-    if (this.didFetchComments == false){
+    if (this.didFetchComments == false) {
       return FutureBuilder<List<Comment>>(
           future: getComments(),
           builder: (context, snapshot) {
@@ -97,9 +106,7 @@ class _CommentScreenState extends State<CommentScreen> {
           });
     } else {
       // for optimistic updating
-      return ListView(
-          children: this.fetchedComments
-      );
+      return ListView(children: this.fetchedComments);
     }
   }
 
@@ -107,7 +114,11 @@ class _CommentScreenState extends State<CommentScreen> {
     List<Comment> comments = [];
 
     // ignore: deprecated_member_use
-    QuerySnapshot data = await FirebaseFirestore.instance.collection("posts").document(postid).collection("comments").get();
+    QuerySnapshot data = await FirebaseFirestore.instance
+        .collection("posts")
+        .document(postid)
+        .collection("comments")
+        .get();
     data.docs.forEach((DocumentSnapshot doc) {
       comments.add(Comment.fromDocument(doc));
     });
@@ -117,7 +128,11 @@ class _CommentScreenState extends State<CommentScreen> {
   addComment(String comment) {
     _commentController.clear();
     // ignore: deprecated_member_use
-    FirebaseFirestore.instance.collection("posts").document(postid).collection("comments").add({
+    FirebaseFirestore.instance
+        .collection("posts")
+        .document(postid)
+        .collection("comments")
+        .add({
       "comment": comment,
       //"timestamp": Timestamp.now(),
       "userId": FirebaseAuth.instance.currentUser.email
@@ -134,11 +149,11 @@ class _CommentScreenState extends State<CommentScreen> {
 
     // add comment to the current listview for an optimistic update
     setState(() {
-      fetchedComments = List.from(fetchedComments)..add(Comment(
-          comment: comment,
-          //timestamp: Timestamp.now(),
-          userId: FirebaseAuth.instance.currentUser.email
-      ));
+      fetchedComments = List.from(fetchedComments)
+        ..add(Comment(
+            comment: comment,
+            //timestamp: Timestamp.now(),
+            userId: FirebaseAuth.instance.currentUser.email));
     });
   }
 }
@@ -149,13 +164,12 @@ class Comment extends StatelessWidget {
   final String comment;
   //final Timestamp timestamp;
 
-  Comment(
-      {
-        //this.username,
-        this.userId,
-        this.comment,
-        //this.timestamp
-      });
+  Comment({
+    //this.username,
+    this.userId,
+    this.comment,
+    //this.timestamp
+  });
 
   factory Comment.fromDocument(DocumentSnapshot document) {
     var data = document.data();

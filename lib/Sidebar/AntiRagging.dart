@@ -31,12 +31,13 @@ class _MyHeaderState extends State<MyHeader> {
             colors: [
               Color(0xFF3383CD),
               Color(0xFF11249F),
-
             ],
           ),
           image: DecorationImage(
             alignment: Alignment.bottomLeft,
-            image: AssetImage("assets/images/anti-rag.png",),
+            image: AssetImage(
+              "assets/images/anti-rag.png",
+            ),
           ),
         ),
         child: Column(
@@ -61,7 +62,6 @@ class _MyHeaderState extends State<MyHeader> {
                       ),
                     ),
                   ),
-
                   Container(),
                 ],
               ),

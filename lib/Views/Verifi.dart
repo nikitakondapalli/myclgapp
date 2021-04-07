@@ -14,12 +14,11 @@ class Verifi extends StatefulWidget {
 }
 
 class _VerifiState extends State<Verifi> {
-
-  String jhdgsj="";
-  String animationa="Jump";
-  bool timer=false;
-  String timecount="TEN";
-  bool verified=false;
+  String jhdgsj = "";
+  String animationa = "Jump";
+  bool timer = false;
+  String timecount = "TEN";
+  bool verified = false;
 
   bool isConnected = true;
 
@@ -40,72 +39,118 @@ class _VerifiState extends State<Verifi> {
   @override
   Widget build(BuildContext context) {
     checkConnectivity();
-    return  isConnected ? Scaffold(
-      backgroundColor:Color(0xff151F2B),
-      body: Column(
-        children: [
-          SizedBox(height: 90,),
-          Center(child:
-          Container(
-              height: 200,
-              width: MediaQuery.of(context).size.width/1.5,
-              child:verified? FlareActor("assets/images/verified.flr",animation: jhdgsj)
-                  :FlareActor("assets/images/mail.flr",animation: animationa,))
-          ),
-          SizedBox(height: 30,),
-          Center(child: Text("Hello, Thank you for registering",style: TextStyle(color: Colors.white,fontSize: 23,fontFamily: 'Handlee',),)),
-          Center(child: Text("we have sent an email..",style: TextStyle(color: Colors.white,fontSize: 23,fontFamily: 'Handlee',),)),
-          Center(child: Text("Please check your inbox and verify.",style: TextStyle(color: Colors.white,fontSize: 23,fontFamily: 'Handlee',),)),
-          SizedBox(height: 35,),
-          timer?CupertinoButton(child: Text("Resend Verification Link"), onPressed: (){
-            FirebaseAuth.instance.currentUser.sendEmailVerification();
-            Fluttertoast.showToast(
-              msg:"Verification link sent ",
-              toastLength: Toast.LENGTH_LONG,
-              backgroundColor: Colors.white,
-              textColor: Colors.black,
-              gravity: ToastGravity.BOTTOM,
-            );})
-              :Container(
-              decoration: BoxDecoration(
-                  color: Color(0xff0E1111),
-                  borderRadius: BorderRadius.circular(50)
-              ),
-              height: 80,
-              width: 180,
-              child: Center(child: Text(timecount,style: TextStyle(
-                  color: Colors.white,fontSize: 30,fontWeight: FontWeight.bold,letterSpacing: 1),))),
-        ],
-      ),
-    )
-        :   NoConnectionScreen(context);
+    return isConnected
+        ? Scaffold(
+            backgroundColor: Color(0xff151F2B),
+            body: Column(
+              children: [
+                SizedBox(
+                  height: 90,
+                ),
+                Center(
+                    child: Container(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        child: verified
+                            ? FlareActor("assets/images/verified.flr",
+                                animation: jhdgsj)
+                            : FlareActor(
+                                "assets/images/mail.flr",
+                                animation: animationa,
+                              ))),
+                SizedBox(
+                  height: 30,
+                ),
+                Center(
+                    child: Text(
+                  "Hello, Thank you for registering",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 23,
+                    fontFamily: 'Handlee',
+                  ),
+                )),
+                Center(
+                    child: Text(
+                  "we have sent an email..",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 23,
+                    fontFamily: 'Handlee',
+                  ),
+                )),
+                Center(
+                    child: Text(
+                  "Please check your inbox and verify.",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 23,
+                    fontFamily: 'Handlee',
+                  ),
+                )),
+                SizedBox(
+                  height: 35,
+                ),
+                timer
+                    ? CupertinoButton(
+                        child: Text("Resend Verification Link"),
+                        onPressed: () {
+                          FirebaseAuth.instance.currentUser
+                              .sendEmailVerification();
+                          Fluttertoast.showToast(
+                            msg: "Verification link sent ",
+                            toastLength: Toast.LENGTH_LONG,
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                            gravity: ToastGravity.BOTTOM,
+                          );
+                        })
+                    : Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff0E1111),
+                            borderRadius: BorderRadius.circular(50)),
+                        height: 80,
+                        width: 180,
+                        child: Center(
+                            child: Text(
+                          timecount,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1),
+                        ))),
+              ],
+            ),
+          )
+        : NoConnectionScreen(context);
   }
 
-  void checkemail(){
+  void checkemail() {
     checkstart();
   }
 
-  void goto(){
+  void goto() {
     setState(() {
-      verified=true;
-      jhdgsj="verified";
+      verified = true;
+      jhdgsj = "verified";
     });
 
-    Future.delayed(Duration(seconds: 2),(){
+    Future.delayed(Duration(seconds: 2), () {
       var dkb = MaterialPageRoute(builder: (context) => Home());
-      Navigator.pushAndRemoveUntil(context, dkb, (Route<dynamic> route) => false);
-      });
+      Navigator.pushAndRemoveUntil(
+          context, dkb, (Route<dynamic> route) => false);
+    });
   }
 
-  void checkstart(){
-    Future.delayed(Duration(seconds: 2),(){
+  void checkstart() {
+    Future.delayed(Duration(seconds: 2), () {
       FirebaseAuth.instance.currentUser.reload().then((value) => {
-        if( FirebaseAuth.instance.currentUser.emailVerified){
-          goto()
-        } else {
-          checkemail()
-        }
-      });
+            if (FirebaseAuth.instance.currentUser.emailVerified)
+              {goto()}
+            else
+              {checkemail()}
+          });
     });
   }
 
@@ -125,85 +170,84 @@ class _VerifiState extends State<Verifi> {
     togglewidgets();
   }
 
-  void count(){
-    Future.delayed(Duration(seconds: 1),(){
+  void count() {
+    Future.delayed(Duration(seconds: 1), () {
       setState(() {
-        timecount="NINE";
+        timecount = "NINE";
       });
     });
   }
 
-  void eight(){
-    Future.delayed(Duration(seconds: 2),(){
+  void eight() {
+    Future.delayed(Duration(seconds: 2), () {
       setState(() {
-        animationa="nll";
-        timecount="EIGHT";
+        animationa = "nll";
+        timecount = "EIGHT";
       });
     });
   }
 
-  void seven(){
-    Future.delayed(Duration(seconds: 3),(){
+  void seven() {
+    Future.delayed(Duration(seconds: 3), () {
       setState(() {
-        timecount="SEVEN";
+        timecount = "SEVEN";
       });
     });
   }
 
-  void six(){
-    Future.delayed(Duration(seconds: 4),(){
+  void six() {
+    Future.delayed(Duration(seconds: 4), () {
       setState(() {
-        timecount="SIX";
+        timecount = "SIX";
       });
     });
   }
 
-  void five(){
-    Future.delayed(Duration(seconds: 5),(){
+  void five() {
+    Future.delayed(Duration(seconds: 5), () {
       setState(() {
-        timecount="FIVE";
+        timecount = "FIVE";
       });
     });
   }
 
-  void four(){
-    Future.delayed(Duration(seconds: 6),(){
+  void four() {
+    Future.delayed(Duration(seconds: 6), () {
       setState(() {
-        timecount="FOUR";
+        timecount = "FOUR";
       });
     });
   }
 
-  void three(){
-    Future.delayed(Duration(seconds: 7),(){
+  void three() {
+    Future.delayed(Duration(seconds: 7), () {
       setState(() {
-        timecount="THREE";
+        timecount = "THREE";
       });
     });
   }
 
-  void two(){
-    Future.delayed(Duration(seconds: 8),(){
+  void two() {
+    Future.delayed(Duration(seconds: 8), () {
       setState(() {
-        timecount="TWO";
+        timecount = "TWO";
       });
     });
   }
 
-  void one(){
-    Future.delayed(Duration(seconds: 9),(){
+  void one() {
+    Future.delayed(Duration(seconds: 9), () {
       setState(() {
-        timecount="ONE";
+        timecount = "ONE";
       });
     });
   }
 
-  void togglewidgets(){
-    Future.delayed(Duration(seconds: 10),(){
+  void togglewidgets() {
+    Future.delayed(Duration(seconds: 10), () {
       setState(() {
-        timer=true;
+        timer = true;
       });
     });
   }
-
 }
